@@ -23,6 +23,10 @@
                     <x-nav-link :href="route('pbs.index')" :active="request()->routeIs('pbs.index')">
                         {{__("PB's")}}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('blog.index')" :active="request()->routeIs('blog.index')">
+                        {{__("Blog")}}
+                    </x-nav-link>
                 </div>
             </div>
 

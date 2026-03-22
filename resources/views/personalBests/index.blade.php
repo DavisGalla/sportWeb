@@ -1,122 +1,141 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 leading-tight">
-            PB / Personal Best Tracker
-        </h2>
-    </x-slot>
 
-    <div class="py-10 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="min-h-screen bg-stone-50 dark:bg-gray-900">
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
 
-        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-5 mb-6">
-
-            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">Add new PB</h3>
-
-            <form method="POST" action="{{ route('pbs.store') }}">
-                @csrf
-                <div class="flex flex-wrap gap-3">
-                    <div class="flex-[2] min-w-[140px]">
-                        <input
-                            type="text"
-                            name="exercise"
-                            placeholder="Exercise"
-                            value="{{ old('exercise') }}"
-                            list="exercise-suggestions"
-                            required
-                            class="w-full h-10 px-3 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500"
-                        />
-                        @error('exercise')
-                            <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div class="flex-1 min-w-[90px]">
-                        <input
-                            type="number"
-                            name="weight"
-                            placeholder="kg"
-                            value="{{ old('weight') }}"
-                            min="0"
-                            step="0.5"
-                            required
-                            class="w-full h-10 px-3 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500"
-                        />
-                        @error('weight')
-                            <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <button
-                        type="submit"
-                        class="h-10 px-5 text-sm font-medium rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:opacity-80 transition"
-                    >
-                        + Add
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        @if ($bests->isEmpty())
-            <p class="text-center text-sm text-gray-400 py-12">No PBs yet — add your first one above.</p>
-        @else
-            <div class="flex flex-col gap-3">
-                @foreach ($bests as $best)
-                    <div
-                        class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-4"
-                        x-data="{ editing: false }"
-                    >
-                        <div class="flex items-center gap-4" x-show="!editing">
-                            <div class="flex-1 min-w-0">
-                                <p class="font-medium text-gray-900 dark:text-gray-100">{{ $best->exercise }}</p>
-                            </div>
-                            <p class="text-2xl font-semibold text-gray-900 dark:text-gray-100 whitespace-nowrap">
-                                {{ $best->weight + 0 }} <span class="text-sm font-normal text-gray-400">kg</span>
-                            </p>
-                            <button
-                                @click="editing = true"
-                                class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-600 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-400 transition text-sm"
-                                title="Edit"
-                            >✎</button>
-                            <form method="POST" action="{{ route('pbs.destroy', $best) }}"
-                                onsubmit="return confirm('Delete this PB?')">
-                                @csrf
-                                @method('DELETE')
-                                <button
-                                    type="submit"
-                                    class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-600 text-gray-400 hover:text-red-500 hover:border-red-300 transition text-sm"
-                                    title="Delete"
-                                >✕</button>
-                            </form>
-                        </div>
-   
-                        <form method="POST" action="{{ route('pbs.update', $best) }}" x-show="editing">
-                            @csrf
-                            @method('PATCH')
-                            <div class="flex items-center gap-3 flex-wrap">
-                                <p class="font-medium text-gray-900 dark:text-gray-100 flex-1">{{ $best->exercise }}</p>
-                                <input
-                                    type="number"
-                                    name="weight"
-                                    value="{{ $best->weight + 0 }}"
-                                    min="0"
-                                    step="0.5"
-                                    required
-                                    class="w-24 h-9 px-3 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300"
-                                />
-                                <button
-                                    type="submit"
-                                    class="h-9 px-4 text-sm font-medium rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:opacity-80 transition"
-                                >Save</button>
-                                <button
-                                    type="button"
-                                    @click="editing = false"
-                                    class="h-9 px-3 text-sm rounded-lg border border-gray-200 dark:border-gray-600 text-gray-500 hover:text-gray-700 transition"
-                                >Cancel</button>
-                            </div>
-                        </form>
-
-                    </div>
-                @endforeach
+            {{-- Page heading --}}
+            <div class="mb-10">
+                <h1 class="text-5xl font-serif font-bold text-gray-900 dark:text-gray-100 leading-tight tracking-tight">
+                    Personal Bests
+                </h1>
+                <div class="mt-3 h-px w-16 bg-amber-400"></div>
+                <p class="mt-3 text-sm text-gray-400 dark:text-gray-500">Track your strongest lifts and watch them grow.</p>
             </div>
-        @endif
+
+            {{-- Add new PB card --}}
+            <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden mb-8">
+                <div class="px-6 pt-6 pb-4 border-b border-gray-100 dark:border-gray-700">
+                    <p class="text-xs font-semibold tracking-widest uppercase text-gray-400 dark:text-gray-500">Add new PB</p>
+                </div>
+                <form method="POST" action="{{ route('pbs.store') }}" class="px-6 py-5">
+                    @csrf
+                    <div class="flex flex-wrap gap-3">
+                        <div class="flex-[2] min-w-[140px]">
+                            <input
+                                type="text"
+                                name="exercise"
+                                placeholder="Exercise name"
+                                value="{{ old('exercise') }}"
+                                list="exercise-suggestions"
+                                required
+                                class="w-full h-11 px-4 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-300 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition"
+                            />
+                            @error('exercise')
+                                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="flex-1 min-w-[90px]">
+                            <input
+                                type="number"
+                                name="weight"
+                                placeholder="kg"
+                                value="{{ old('weight') }}"
+                                min="0"
+                                step="0.5"
+                                required
+                                class="w-full h-11 px-4 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-300 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition"
+                            />
+                            @error('weight')
+                                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="h-11 px-6 text-sm font-semibold rounded-xl bg-gray-800 dark:bg-gray-700 text-white hover:bg-gray-700 dark:hover:bg-gray-600 active:scale-95 transition-all duration-150 whitespace-nowrap"
+                        >
+                            + Add
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            {{-- PB list --}}
+            @if ($bests->isEmpty())
+                <div class="text-center py-20">
+                    <div class="w-14 h-14 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mx-auto mb-4 text-2xl">🏋️</div>
+                    <p class="text-sm text-gray-400 dark:text-gray-500">No PBs yet — add your first one above.</p>
+                </div>
+            @else
+                <div class="flex flex-col gap-px">
+                    @foreach ($bests as $best)
+                        <div
+                            class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-6 py-5 first:rounded-t-2xl last:rounded-b-2xl group transition-all duration-150 hover:border-gray-300 dark:hover:border-gray-500 hover:shadow-sm"
+                            x-data="{ editing: false }"
+                        >
+                            {{-- View mode --}}
+                            <div class="flex items-center gap-4" x-show="!editing" x-transition>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-medium text-gray-900 dark:text-gray-100 truncate">{{ $best->exercise }}</p>
+                                </div>
+
+                                <div class="flex items-baseline gap-1">
+                                    <span class="text-2xl font-serif font-bold text-gray-900 dark:text-gray-100">{{ $best->weight + 0 }}</span>
+                                    <span class="text-xs font-medium text-gray-400 dark:text-gray-500">kg</span>
+                                </div>
+
+                                <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                                    <button
+                                        @click="editing = true"
+                                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-600 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-400 dark:hover:border-gray-400 transition text-sm"
+                                        title="Edit"
+                                    >✎</button>
+                                    <form method="POST" action="{{ route('pbs.destroy', $best) }}"
+                                        onsubmit="return confirm('Delete this PB?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button
+                                            type="submit"
+                                            class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-600 text-gray-400 hover:text-red-500 hover:border-red-300 dark:hover:border-red-500 transition text-sm"
+                                            title="Delete"
+                                        >✕</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            {{-- Edit mode --}}
+                            <form method="POST" action="{{ route('pbs.update', $best) }}" x-show="editing" x-transition>
+                                @csrf
+                                @method('PATCH')
+                                <div class="flex items-center gap-3 flex-wrap">
+                                    <p class="font-medium text-gray-900 dark:text-gray-100 flex-1 min-w-0 truncate">{{ $best->exercise }}</p>
+                                    <input
+                                        type="number"
+                                        name="weight"
+                                        value="{{ $best->weight + 0 }}"
+                                        min="0"
+                                        step="0.5"
+                                        required
+                                        class="w-24 h-9 px-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition"
+                                    />
+                                    <button
+                                        type="submit"
+                                        class="h-9 px-4 text-sm font-semibold rounded-xl bg-gray-800 dark:bg-gray-700 text-white hover:bg-gray-700 dark:hover:bg-gray-600 active:scale-95 transition-all duration-150"
+                                    >Save</button>
+                                    <button
+                                        type="button"
+                                        @click="editing = false"
+                                        class="h-9 px-3 text-sm rounded-xl border border-gray-200 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-400 transition"
+                                    >Cancel</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
+        </div>
     </div>
 </x-app-layout>

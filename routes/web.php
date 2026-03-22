@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\PersonalBestController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\PostController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,6 +28,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/pbs', [PersonalBestController::class, 'store'])->name('pbs.store');
     Route::patch('/pbs/{pb}', [PersonalBestController::class, 'update'])->name('pbs.update');
     Route::delete('/pbs/{pb}', [PersonalBestController::class, 'destroy'])->name('pbs.destroy');
+
+    Route::get('/blog', [PostController::class, 'index'])->name('blog.index');
+    Route::get('/blog/create', [PostController::class, 'create'])->name('blog.create');
+    Route::post('/blog', [PostController::class, 'store'])->name('blog.store');
+    Route::get('/blog/{post}', [PostController::class, 'show'])->name('blog.show');
+
+    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
 });
 
 require __DIR__.'/auth.php';

@@ -1,44 +1,37 @@
 <x-app-layout>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="min-h-screen bg-stone-50 dark:bg-gray-900">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
 
-            @if(session('error'))
-                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-                    {{ session('error') }}
+            {{-- Page heading --}}
+            <div class="mb-10 flex items-end justify-between">
+                <div>
+                    <h1 class="text-5xl font-serif font-bold text-gray-900 dark:text-white leading-tight tracking-tight">Calendar</h1>
+                    <div class="mt-3 h-px w-16 bg-amber-400"></div>
                 </div>
-            @endif
+                <a href="{{ route('calendar.create') }}"
+                   class="inline-flex items-center gap-2 bg-gray-800 dark:bg-gray-700 text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-gray-700 dark:hover:bg-gray-600 active:scale-95 transition-all duration-150">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Add Event
+                </a>
+            </div>
 
-            @if(session('success'))
-                <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h1 class="text-3xl font-bold">Your Calendar</h1>
-                    <a href="{{ route('calendar.create') }}"
-                       class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors shadow-sm shadow-blue-200 text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-                        </svg>
-                        Add Event
-                    </a>
-                </div>
-
+            {{-- Calendar card --}}
+            <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 sm:p-8">
                 <div id="calendar"></div>
             </div>
 
         </div>
     </div>
 
-    {{-- FullCalendar --}}
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
 
     <style>
         .fc-day { cursor: pointer; }
-        .fc-daygrid-day:hover .fc-daygrid-day-frame { background-color: #eff6ff !important; }
+        .fc-daygrid-day:hover .fc-daygrid-day-frame { background-color: #6d7e8f !important; }
+        .dark .fc-daygrid-day:hover .fc-daygrid-day-frame { background-color: #1f2937 !important; }
     </style>
 
     <script>
