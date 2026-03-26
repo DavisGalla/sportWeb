@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
-    
+    // saglaba komentārus
     public function store(StoreCommentRequest $request): RedirectResponse
     {
         Comment::create([
@@ -20,6 +20,7 @@ class CommentController extends Controller
         return back()->with('success', 'Comment created successfully!');
     }
 
+    // dzēš komentārus
     public function destroy(Comment $comment): RedirectResponse
     {
         if ($comment->user_id !== Auth::id()) {
