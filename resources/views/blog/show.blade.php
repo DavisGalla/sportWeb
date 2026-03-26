@@ -24,6 +24,22 @@
                     <span class="text-gray-200 dark:text-gray-600">·</span>
                     <span class="text-sm text-gray-400 dark:text-gray-500">{{ $post->created_at->format('M j, Y') }}</span>
                 </div>
+
+                @if(auth()->id() === $post->user_id)
+                    <div class="mt-6">
+                        <form method="POST" action="{{ route('blog.destroy', $post->id) }}" onsubmit="return confirm('Delete this post?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                    class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white text-sm font-semibold px-4 py-2 rounded-xl transition active:scale-95">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0H7m10 0a1 1 0 0 0-1-1h-1M10 6a1 1 0 0 0-1 1m0 0h6"/>
+                                </svg>
+                                Delete Post
+                            </button>
+                        </form>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -54,13 +70,26 @@
                     <div class="space-y-4">
                         @foreach($post->comments as $comment)
                             <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl px-6 py-5">
-                                <div class="flex items-center gap-2.5 mb-3">
-                                    <div class="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs font-bold text-gray-500 dark:text-gray-400">
-                                        {{ strtoupper(substr($comment->user->name, 0, 1)) }}
+                                <div class="flex items-start justify-between gap-4 mb-3">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs font-bold text-gray-500 dark:text-gray-400">
+                                            {{ strtoupper(substr($comment->user->name, 0, 1)) }}
+                                        </div>
+                                        <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ $comment->user->name }}</span>
+                                        <span class="text-gray-300 dark:text-gray-600 text-xs">·</span>
+                                        <span class="text-xs text-gray-400 dark:text-gray-500">{{ $comment->created_at->diffForHumans() }}</span>
                                     </div>
-                                    <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ $comment->user->name }}</span>
-                                    <span class="text-gray-300 dark:text-gray-600 text-xs">·</span>
-                                    <span class="text-xs text-gray-400 dark:text-gray-500">{{ $comment->created_at->diffForHumans() }}</span>
+
+                                    @if(auth()->id() === $comment->user_id)
+                                        <form method="POST" action="{{ route('comments.destroy', $comment->id) }}" onsubmit="return confirm('Delete this comment?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    class="inline-flex items-center bg-transparent hover:bg-red-50 dark:hover:bg-red-950/40 text-red-600 dark:text-red-400 text-xs font-semibold px-2 py-1 rounded-lg transition">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                                 <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">{{ $comment->content }}</p>
                             </div>

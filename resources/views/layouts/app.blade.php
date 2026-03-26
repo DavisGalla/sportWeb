@@ -18,6 +18,8 @@
             .font-serif { font-family: 'Lora', Georgia, serif; }
             body { font-family: 'DM Sans', sans-serif; }
         </style>
+
+        @stack('styles') 
     </head>
     <body class="antialiased">
         <div class="min-h-screen bg-stone-50 dark:bg-gray-900">

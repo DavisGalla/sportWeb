@@ -8,6 +8,8 @@ use App\Models\User;
 
 class GoogleCalendarService
 {
+    private const DEFAULT_MAX_RESULTS = 10;
+
     protected $client;
     protected $calendar;
     protected $user;
@@ -55,7 +57,7 @@ class GoogleCalendarService
 
     public function createEvent($summary, $description, $startTime, $endTime)
     {
-        $timezone = 'Europe/Riga';
+        $timezone = config('app.timezone', 'UTC');
 
         $start = \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $startTime, $timezone)->toIso8601String();
         $end   = \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $endTime,   $timezone)->toIso8601String();
@@ -70,16 +72,26 @@ class GoogleCalendarService
         return $this->calendar->events->insert('primary', $event);
     }
 
-    public function listEvents($maxResults = 10)
+    public function listEvents(?int $maxResults = null)
     {
         $results = $this->calendar->events->listEvents('primary', [
-            'maxResults' => $maxResults,
+            'maxResults' => $maxResults ?? self::DEFAULT_MAX_RESULTS,
             'orderBy' => 'startTime',
             'singleEvents' => true,
             'timeMin' => (new \DateTime())->format(\DateTime::RFC3339),
         ]);
 
         return $results->getItems();
+    }
+
+    public function getEvent(string $eventId)
+    {
+        return $this->calendar->events->get('primary', $eventId);
+    }
+
+    public function deleteEvent(string $eventId): void
+    {
+        $this->calendar->events->delete('primary', $eventId);
     }
 }
 

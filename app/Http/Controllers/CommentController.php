@@ -2,23 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreCommentRequest;
 use App\Models\Comment;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
-    public function store(Request $request) {
-        $request->validate([
-            'content' => 'required',
-            'post_id' => 'required'
-        ]);
-
+    
+    public function store(StoreCommentRequest $request): RedirectResponse
+    {
         Comment::create([
-            'user_id' => auth()->id(),
-            'post_id' => $request->post_id,
-            'content' => $request->content
+            'user_id' => Auth::id(),
+            ...$request->validated(),
         ]);
 
         return back()->with('success', 'Comment created successfully!');
+    }
+
+    public function destroy(Comment $comment): RedirectResponse
+    {
+        if ($comment->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $comment->delete();
+
+        return back()->with('success', 'Comment deleted successfully!');
     }
 }

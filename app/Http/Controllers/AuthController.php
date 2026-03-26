@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\InvalidStateException;
 
 class AuthController extends Controller
 {
@@ -18,7 +20,18 @@ class AuthController extends Controller
 
     public function handleGoogleCallback()
     {
-        $googleUser = Socialite::driver('google')->user();
+        try {
+            $googleUser = Socialite::driver('google')->user();
+        } catch (InvalidStateException $exception) {
+            if (app()->environment('local')) {
+                Log::warning('Google OAuth state mismatch in local environment, retrying stateless.', [
+                    'message' => $exception->getMessage(),
+                ]);
+                $googleUser = Socialite::driver('google')->stateless()->user();
+            } else {
+                throw $exception;
+            }
+        }
 
         $user = User::updateOrCreate(
             ['email' => $googleUser->getEmail()],
@@ -35,6 +48,6 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect('/dashboard');
+        return redirect()->route('dashboard');
     }
 }

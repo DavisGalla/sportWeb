@@ -22,7 +22,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::get('/calendar/create', [CalendarController::class, 'create'])->name('calendar.create');
+    Route::get('/calendar/{eventId}', [CalendarController::class, 'show'])->name('calendar.show');
     Route::post('/calendar', [CalendarController::class, 'store'])->name('calendar.store');
+    Route::delete('/calendar/{eventId}', [CalendarController::class, 'destroy'])->name('calendar.destroy');
 
     Route::get('/pbs', [PersonalBestController::class, 'index'])->name('pbs.index');
     Route::post('/pbs', [PersonalBestController::class, 'store'])->name('pbs.store');
@@ -33,8 +35,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/blog/create', [PostController::class, 'create'])->name('blog.create');
     Route::post('/blog', [PostController::class, 'store'])->name('blog.store');
     Route::get('/blog/{post}', [PostController::class, 'show'])->name('blog.show');
+    Route::delete('/blog/{post}', [PostController::class, 'destroy'])->name('blog.destroy');
 
     Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 });
 
 require __DIR__.'/auth.php';
